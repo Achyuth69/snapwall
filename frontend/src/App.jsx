@@ -5,7 +5,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { Toaster } from "react-hot-toast";
 
-
 import Topbar from "./components/Topbar.jsx";
 import bgVideo from "/background.mp4";
 import "./App.css";
@@ -17,6 +16,8 @@ function App() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [pageKey, setPageKey] = useState(location.pathname);
+  const [transitioning, setTransitioning] = useState(false);
 
   const hideTopbar = [
     "/login",
@@ -27,19 +28,27 @@ function App() {
     "/success",
   ].includes(location.pathname);
 
+  // Trigger smooth fade on route change
+  useEffect(() => {
+    setTransitioning(true);
+    const t = setTimeout(() => {
+      setPageKey(location.pathname);
+      setTransitioning(false);
+    }, 120);
+    return () => clearTimeout(t);
+  }, [location.pathname]);
+
   useEffect(() => {
     setSearchQuery("");
   }, [location.pathname]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
-      // ✅ Prevent multiple guest timers
       if (guestTimerRef.current) {
         clearTimeout(guestTimerRef.current);
         guestTimerRef.current = null;
       }
 
-      // 🔴 NOT LOGGED IN
       if (!user) {
         if (location.pathname === "/" && !guestTimerRef.current) {
           guestTimerRef.current = setTimeout(() => {
@@ -48,12 +57,10 @@ function App() {
         } else if (!["/login", "/signup", "/forgot"].includes(location.pathname)) {
           navigate("/login");
         }
-
         setLoading(false);
         return;
       }
 
-      // Email not verified
       if (!user.emailVerified) {
         if (location.pathname !== "/verify-email") {
           navigate("/verify-email");
@@ -62,7 +69,6 @@ function App() {
         return;
       }
 
-      // 🟢 Check profile exists
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
 
@@ -74,7 +80,6 @@ function App() {
         return;
       }
 
-      // ✅ Fully onboarded users should not see auth pages
       if (
         ["/login", "/signup", "/verify-email", "/profile-details"].includes(
           location.pathname
@@ -95,21 +100,33 @@ function App() {
   if (loading) return null;
 
   return (
-  <div className="app-root">
-    <Toaster position="top-center" reverseOrder={false} />
+    <div className="app-root">
+      <Toaster position="top-center" reverseOrder={false} />
 
-    <video className="bg-video" autoPlay loop muted playsInline>
-      <source src={bgVideo} type="video/mp4" />
-    </video>
+      <video
+        className="bg-video"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+      >
+        <source src={bgVideo} type="video/mp4" />
+      </video>
 
-    <div className="bg-overlay" />
+      <div className="bg-overlay" />
 
-    <div className="app-content">
-      {!hideTopbar && <Topbar onSearch={setSearchQuery} />}
-      <Outlet context={{ searchQuery }} />
+      <div className="app-content">
+        {!hideTopbar && <Topbar onSearch={setSearchQuery} />}
+        <div
+          key={pageKey}
+          className={`page-transition ${transitioning ? "page-out" : "page-in"}`}
+        >
+          <Outlet context={{ searchQuery }} />
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;

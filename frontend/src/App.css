@@ -2,6 +2,8 @@
   position: relative;
   min-height: 100vh;
   overflow: hidden;
+  /* Dark fallback while video loads */
+  background: #0a0a1a;
 }
 
 /* 🎥 Video layer */
@@ -13,6 +15,9 @@
   height: 100%;
   object-fit: cover;
   z-index: -2;
+  /* Show nothing until video is ready — no flash */
+  opacity: 0;
+  animation: fadeInVideo 0.8s ease forwards;
 }
 
 /* 🌫 Dark overlay for contrast */
@@ -32,3 +37,50 @@
   z-index: 1;
   min-height: 100vh;
 }
+
+/* ── Page transitions ── */
+.page-transition {
+  will-change: opacity, transform;
+}
+
+.page-in {
+  animation: pageIn 0.2s ease forwards;
+}
+
+.page-out {
+  animation: pageOut 0.12s ease forwards;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ── Global smooth interactions ── */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, a, input, select, textarea {
+  transition: all 0.15s ease;
+}
+
+
