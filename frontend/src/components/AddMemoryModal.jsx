@@ -3,7 +3,7 @@ import { FaTimes, FaCloudUploadAlt } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import { Country, State, City } from "country-state-city";
 import { getAuth } from "firebase/auth";
-import { db, storage } from "../firebase";
+import { db } from "../firebase";
 import {
   collection,
   addDoc,
@@ -11,7 +11,7 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { supabase } from "../supabase";
 import { useNavigate } from "react-router-dom";
 import "./AddMemoryModal.css";
 import ShareMemoryModal from "./ShareMemoryModal.jsx";
@@ -51,17 +51,7 @@ const AddMemoryModal = ({ onClose }) => {
     canvas.width = crop.width;
     canvas.height = crop.height;
 
-    ctx.drawImage(
-      image,
-      crop.x,
-      crop.y,
-      crop.width,
-      crop.height,
-      0,
-      0,
-      crop.width,
-      crop.height
-    );
+    ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
 
     return new Promise((resolve) => {
       canvas.toBlob((file) => resolve(file), "image/jpeg");
@@ -89,17 +79,24 @@ const AddMemoryModal = ({ onClose }) => {
 
       const userData = userSnap.data();
       const username = userData.username || "Anonymous";
-      const profileImage =
-        userData.imageUrl || "https://ui-avatars.com/api/?name=User";
+      const profileImage = userData.imageUrl || "https://ui-avatars.com/api/?name=User";
 
-      const croppedBlob = await getCroppedImg(
-        URL.createObjectURL(image),
-        croppedAreaPixels
-      );
+      const croppedBlob = await getCroppedImg(URL.createObjectURL(image), croppedAreaPixels);
 
-      const imageRef = ref(storage, `memories/${user.uid}/${Date.now()}`);
-      await uploadBytes(imageRef, croppedBlob);
-      const imageUrl = await getDownloadURL(imageRef);
+      // ── Upload to Supabase Storage ──────────────────────────
+      const filePath = `${user.uid}/${Date.now()}.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from("memories")
+        .upload(filePath, croppedBlob, { contentType: "image/jpeg" });
+
+      if (uploadError) throw new Error(uploadError.message);
+
+      const { data: urlData } = supabase.storage
+        .from("memories")
+        .getPublicUrl(filePath);
+
+      const imageUrl = urlData.publicUrl;
+      // ────────────────────────────────────────────────────────
 
       const now = new Date();
       const postedDate = `${String(now.getDate()).padStart(2, "0")}-${String(
@@ -125,7 +122,7 @@ const AddMemoryModal = ({ onClose }) => {
       setStep("share");
     } catch (err) {
       console.error("POST ERROR:", err);
-      alert("Failed to post memory");
+      alert("Failed to post memory: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -136,10 +133,7 @@ const AddMemoryModal = ({ onClose }) => {
       {step === "form" && (
         <div className="memory-overlay">
           <div className="memory-modal-ui">
-            <FaTimes
-              className="close-icon"
-              onClick={!loading ? onClose : undefined}
-            />
+            <FaTimes className="close-icon" onClick={!loading ? onClose : undefined} />
             <h2>Add Memory</h2>
 
             {!image && (
@@ -170,9 +164,7 @@ const AddMemoryModal = ({ onClose }) => {
                     onCropComplete={(c, p) => setCroppedAreaPixels(p)}
                   />
                 </div>
-
                 <p className="zoom-label">Zoom & adjust</p>
-
                 <input
                   type="range"
                   min={1}
@@ -196,17 +188,11 @@ const AddMemoryModal = ({ onClose }) => {
             <select
               className="gradient-input"
               value={countryCode}
-              onChange={(e) => {
-                setCountryCode(e.target.value);
-                setStateCode("");
-                setCity("");
-              }}
+              onChange={(e) => { setCountryCode(e.target.value); setStateCode(""); setCity(""); }}
             >
               <option value="">Country</option>
               {Country.getAllCountries().map((c) => (
-                <option key={c.isoCode} value={c.isoCode}>
-                  {c.name}
-                </option>
+                <option key={c.isoCode} value={c.isoCode}>{c.name}</option>
               ))}
             </select>
 
@@ -214,16 +200,11 @@ const AddMemoryModal = ({ onClose }) => {
               className="gradient-input"
               disabled={!countryCode}
               value={stateCode}
-              onChange={(e) => {
-                setStateCode(e.target.value);
-                setCity("");
-              }}
+              onChange={(e) => { setStateCode(e.target.value); setCity(""); }}
             >
               <option value="">State</option>
               {State.getStatesOfCountry(countryCode).map((s) => (
-                <option key={s.isoCode} value={s.isoCode}>
-                  {s.name}
-                </option>
+                <option key={s.isoCode} value={s.isoCode}>{s.name}</option>
               ))}
             </select>
 
@@ -235,9 +216,7 @@ const AddMemoryModal = ({ onClose }) => {
             >
               <option value="">City</option>
               {City.getCitiesOfState(countryCode, stateCode).map((c) => (
-                <option key={c.name} value={c.name}>
-                  {c.name}
-                </option>
+                <option key={c.name} value={c.name}>{c.name}</option>
               ))}
             </select>
 
@@ -252,10 +231,7 @@ const AddMemoryModal = ({ onClose }) => {
         <ShareMemoryModal
           imageUrl={uploadedImage}
           shareLink={shareLink}
-          onClose={() => {
-            onClose();
-            navigate("/");
-          }}
+          onClose={() => { onClose(); navigate("/"); }}
         />
       )}
     </>
