@@ -6,7 +6,7 @@ import { auth, db } from "./firebase";
 import { Toaster } from "react-hot-toast";
 
 import Topbar from "./components/Topbar.jsx";
-import bgVideo from "/background.mp4";
+import ParallaxBackground from "./components/ParallaxBackground.jsx";
 import "./App.css";
 
 function App() {
@@ -103,18 +103,7 @@ function App() {
     <div className="app-root">
       <Toaster position="top-center" reverseOrder={false} />
 
-      <video
-        className="bg-video"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-      >
-        <source src={bgVideo} type="video/mp4" />
-      </video>
-
-      <div className="bg-overlay" />
+      <ParallaxBackground />
 
       <div className="app-content">
         {!hideTopbar && <Topbar onSearch={setSearchQuery} />}

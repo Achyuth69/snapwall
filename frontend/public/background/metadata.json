@@ -1,0 +1,6 @@
+{
+  "name": "Cinematic Cosmic Canvas",
+  "description": "An interactive, ultra-wide 16:9 cinematic living night sky landscape featuring multiple layers of parallax depth, dynamic star twinkling, customizable northern lights, drifting ethereal clouds, shooting stars, and a built-in atmospheric synthesizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
