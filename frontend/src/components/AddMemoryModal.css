@@ -1,0 +1,322 @@
+.memory-overlay { 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0, 0, 0, 0.8); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 999; 
+    padding: 16px; /* ✅ prevents edge cut on small screens */ 
+    overflow-y: auto; /* ✅ allows scroll on small devices */ 
+} 
+
+.memory-modal-ui { 
+    width: 100%; 
+    max-width: 380px; 
+    margin-top: 100px; /* desktop size */ 
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(8px);
+    border-radius: 24px; 
+    border: 1px solid #eae4e4;
+    padding: 24px 22px; 
+    position: relative; 
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25); 
+} 
+
+.upload-icon svg {
+  font-size: 24px;
+  color: #999;
+}
+/* Close icon */ 
+.close-icon { 
+    position: absolute; 
+    top: 30px; 
+    right: 24px; 
+    cursor: pointer; 
+    opacity: 0.6; 
+    color: #ffffff;
+} 
+
+.memory-modal-ui h2 { 
+    text-align: center; 
+    margin-bottom: 18px; 
+    font-size: 18px; 
+    font-weight: 600; 
+    color: #ffffff;
+} 
+
+/* Upload box */ 
+
+.upload-box {
+  border-radius: 16px;
+  background: linear-gradient(90deg, #A821EB, #34B8FF);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 16px;
+  padding: 24px;
+}
+
+/* Hide upload box after image is selected */
+.upload-box.hidden {
+  display: none;
+}
+
+
+.upload-icon {
+    width: 64px;
+    aspect-ratio: 1 / 1;   /* keeps it perfectly square */
+    min-width: 64px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-icon svg {
+    font-size: 28px;
+    color: #ffffff;
+}
+
+
+.upload-box p { 
+    margin-top: 8px;
+    font-size: 14px; 
+    font-weight: 500; 
+    color: #ffffff;
+}
+
+.crop-container {
+  position: relative;
+  width: 100%;
+  height: 260px; /* bigger for better control */
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(6px);
+}
+
+.zoom-slider {
+  width: 100%;
+  margin: 10px 0 18px 0;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #4facfe, #8e2de2);
+  outline: none;
+}
+
+/* Track */
+.zoom-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 10px;
+}
+
+/* Thumb */
+.zoom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(142,45,226,0.6);
+  margin-top: -6px;
+  transition: transform 0.15s ease;
+}
+
+.zoom-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Firefox */
+.zoom-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(142,45,226,0.6);
+}
+
+.zoom-label {
+  font-size: 12px;
+  color: #bbb;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+
+/* Post button */ 
+.post-btn { 
+    width: 100%; 
+    margin-top: 8px; 
+    padding: 12px; 
+    border-radius: 14px; 
+    border: none; 
+    font-size: 15px; 
+    font-weight: 600; 
+    color: #ffffff; 
+    cursor: pointer; 
+    background: linear-gradient(90deg, #4facfe, #8e2de2); 
+} 
+.post-btn:disabled { 
+    opacity: 0.7; 
+    cursor: not-allowed; 
+} 
+
+.post-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(122, 122, 255, 0.35);
+}
+
+.gradient-input { 
+    width: 100%; 
+    padding: 12px 14px; 
+    border-radius: 12px; 
+    margin-bottom: 12px; 
+    font-size: 14px; 
+    color: #ffffff;
+    outline: none; 
+    border: 2px solid #ffffff; 
+    background: transparent;
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+} 
+
+.gradient-input::placeholder {
+  color: #ffffff;
+}
+/* subtle dropdown arrow */ 
+/* GLASS SELECT FIELD */
+select.gradient-input {
+    width: 100%;
+    padding: 12px 40px 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #ffffff;
+
+    border: 1.5px solid #ffffff;
+
+
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* custom arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 14px;
+}
+
+/* Dropdown list items */
+select.gradient-input option {
+    background-color: #1a1a1a;  /* dark glass fallback */
+    color: #ffffff;
+}
+
+select.gradient-input:focus {
+    box-shadow: 0 0 0 3px rgba(142,45,226,0.25);
+}
+
+
+/* Bigger caption box */ 
+.caption-box { 
+    min-height: 90px; 
+    resize: none; 
+    line-height: 1.4; 
+} 
+/* Character counter */ 
+.char-count { 
+    text-align: right; 
+    font-size: 12px; 
+    color: #999; 
+    margin-top: -6px; 
+    margin-bottom: 10px; 
+} 
+
+.image-preview-box {
+  width: 100%;
+  height: 190px;            /* SAME HEIGHT AS POST CARD */
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        /* SAME BEHAVIOR AS POST CARD */
+  display: block;
+}
+
+.popup-status-image { 
+    width: 100px; 
+    height: 100px; 
+    margin-bottom: 18px; 
+} 
+@media (max-width: 360px) { 
+    .memory-modal-ui { 
+        padding: 18px 16px; 
+        border-radius: 18px; 
+    } 
+    .upload-box { 
+        height: 110px; 
+    } 
+    .popup-status-image { 
+        width: 70px; 
+        height: 70px; 
+    } 
+    .post-btn { 
+        padding: 10px; 
+        font-size: 14px; 
+    } 
+    .upload-icon {
+    width: 56px;
+    min-width: 56px;
+  }
+}
+
+@media (min-width: 768px) { 
+    .memory-modal-ui { 
+        max-width: 420px; 
+    } 
+    .upload-box { 
+        height: 150px; 
+    } 
+    .popup-status-image { 
+        width: 120px; 
+        height: 120px; 
+    } 
+}
+
+.crop-container {
+  position: relative;
+  width: 100%;
+  height: 190px;   /* SAME AS FINAL CARD */
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.zoom-slider {
+  width: 100%;
+  margin-bottom: 14px;
+}

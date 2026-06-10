@@ -1,0 +1,128 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  width: 400px;
+  max-width: 92%;
+  border-radius: 16px;
+  border: 1px solid #eae4e4;
+  padding: 24px;
+  animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-card h2 {
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 22px;
+  color: #ffffff;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.avatar-section img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.upload-btn-1 {
+  font-size: 13px;
+  background: transparent;
+  border: 1.5px solid #ffffff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.upload-btn-1:hover {
+  background: #ffffff;
+  color: #a855f7;
+  font-weight: 400;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(122, 122, 255, 0.35);
+  transition: all 0.25s ease;
+}
+
+.modal-card input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #ffffff;
+  outline: none;
+  background: transparent;
+  border: 1.5px solid #ffffff;
+  margin-bottom: 12px;
+  transition: all 0.25s ease;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.cancel-btn {
+  background: transparent;
+  border: 1.5px solid #ffffff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: #ffffff;
+  color: #a855f7;
+  font-weight: 400;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(122, 122, 255, 0.35);
+  transition: all 0.25s ease;
+}
+
+.save-btn {
+  background: linear-gradient(90deg, #a855f7, #3b82f6);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(122, 122, 255, 0.35);
+}
+
+.save-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .modal-card {
+    padding: 18px;
+  }
+}

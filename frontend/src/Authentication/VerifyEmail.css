@@ -1,0 +1,101 @@
+/* Full page background */
+.verify-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Glass card */
+.verify-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 30px;
+  border-radius: 24px;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid #eae4e4;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  text-align: center;
+  color: #ffffff;
+}
+
+/* Title */
+.verify-card h2 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+/* Subtitle */
+.verify-card p {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 25px;
+}
+
+/* Buttons */
+.verify-card button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* Primary button */
+.verify-card button:first-of-type {
+  background: linear-gradient(90deg, #A821EB, #34B8FF);
+  color: white;
+}
+
+.verify-card button:first-of-type:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(122, 122, 255, 0.35);
+}
+
+/* Secondary button */
+.resend-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.resend-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(122, 122, 255, 0.35);
+}
+
+/* Disabled */
+.verify-card button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Message text */
+.verify-message {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #93c5fd;
+}
+
+/* 📱 Mobile adjustments */
+@media (max-width: 480px) {
+  .verify-card {
+    padding: 30px 20px;
+  }
+
+  .verify-card h2 {
+    font-size: 22px;
+  }
+
+  .verify-card p {
+    font-size: 13px;
+  }
+}

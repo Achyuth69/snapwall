@@ -1,0 +1,220 @@
+/* ── Overlay ── */
+.share-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+/* ── Modal ── */
+.share-container {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(20, 20, 30, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  padding: 22px 20px 24px;
+  animation: scaleIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Header ── */
+.share-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.share-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.share-x-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.share-x-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Success ── */
+.share-success-text {
+  font-size: 13px;
+  color: #4ade80;
+  margin: 0 0 14px;
+}
+
+/* ── Preview ── */
+.share-preview-wrapper {
+  width: 100%;
+  height: 200px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.share-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Native share button ── */
+.share-native-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #A821EB, #34B8FF);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.share-native-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ── Social section label ── */
+.share-with-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+}
+
+/* ── Social icons row ── */
+.share-icons-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.share-icon {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 4px 8px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none;
+  font-size: 20px;
+  transition: transform 0.2s, background 0.2s;
+  cursor: pointer;
+}
+
+.share-icon:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.13);
+}
+
+.share-icon-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Brand colours */
+.share-icon.whatsapp  { color: #25d366; }
+.share-icon.telegram  { color: #229ed9; }
+.share-icon.facebook  { color: #1877f2; }
+.share-icon.twitter   { color: #1da1f2; }
+
+/* ── Action row (copy / download) ── */
+.share-action-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.share-action-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.share-action-btn:hover {
+  background: rgba(255,255,255,0.14);
+  transform: translateY(-1px);
+}
+
+/* ── Done button ── */
+.share-close-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.share-close-btn:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+/* ── Animation ── */
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .share-container { border-radius: 20px; }
+  .share-preview-wrapper { height: 170px; }
+  .share-icon { font-size: 18px; }
+  .share-icon-label { display: none; }
+}

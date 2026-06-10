@@ -1,0 +1,102 @@
+.polaroid-card-1 {
+  width: 320px;
+  min-height: 460px;
+
+  /* important for html-to-image */
+  box-sizing: border-box;
+}
+
+/* HOVER — keeps original rotation */
+.polaroid-card:hover {
+  transform:
+    rotate(var(--rotate))
+    translateY(calc(var(--offsetY) - 8px))
+    scale(1.05);
+
+  z-index: 5;
+  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.35);
+}
+
+/* PIN */
+.pin-dot {
+  width: 12px;
+  height: 12px;
+  background: #e11d48;
+  border-radius: 50%;
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* IMAGE */
+.polaroid-image img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+/* CONTENT */
+.polaroid-content {
+  padding: 12px 6px 4px;
+  text-align: center;
+}
+
+/* USER */
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
+
+/* CAPTION */
+.caption {
+  font-family: "Grey Qo", cursive;
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 10px 0 12px;
+  color: #111;
+
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+/* LOCATION */
+.location-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fde6f5;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+}
+
+/* DATE */
+.date-text {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* SEARCH HIGHLIGHT */
+.polaroid-card.highlight {
+  outline: 3px solid #a855f7;
+  box-shadow: 0 0 22px rgba(255, 59, 106, 0.45);
+  z-index: 6;
+}

@@ -1,0 +1,62 @@
+/* MAIN WRAPPER */
+.home-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+/* VIEWPORT (camera window) */
+.memory-viewport {
+  height: calc(100vh - 65px);
+  width: 100%;
+  overflow: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* VIRTUAL CANVAS */
+.memory-canvas {
+  min-width: 3000px;
+  min-height: 4000px;
+  padding: 120px;
+  transition: none;
+}
+
+/* GRID */
+.memory-wall {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--card-size), 1fr)
+  );
+  gap: var(--gap-y) var(--gap-x);
+  justify-items: center;
+}
+
+/* HORIZONTAL SCROLL (if used elsewhere) */
+.snapwall-scroll {
+  display: flex;
+  padding: 20px 32px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.snapwall-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* HIGHLIGHT EFFECT */
+.highlight-memory {
+  animation: highlightPulse 2s ease-in-out 2;
+  box-shadow: 0 0 25px rgba(255, 0, 120, 0.7);
+  border-radius: 18px;
+}
+
+@keyframes highlightPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
