@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { db, storage, auth } from "../firebase";
+import { db, auth } from "../firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { supabase } from "../supabase";
 import "./EditProfileModal.css";
 
 const EditProfileModal = ({ user, onClose, onUpdate }) => {
@@ -12,19 +12,17 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
   const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  // ✅ Allow only images
-  if (!file.type.startsWith("image/")) {
-    alert("Please upload an image file only");
-    return;
-  }
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload an image file only");
+      return;
+    }
 
-  setImage(file);
-  setPreview(URL.createObjectURL(file));
-};
-
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
 
   const handleSave = async () => {
     try {
@@ -32,30 +30,34 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
       let imageUrl = user.imageUrl;
 
       if (image) {
-        const imgRef = ref(
-          storage,
-          `profileImages/${auth.currentUser.uid}`
-        );
-        await uploadBytes(imgRef, image);
-        imageUrl = await getDownloadURL(imgRef);
+        // ── Upload to Supabase Storage ──────────────────────────
+        const filePath = `${auth.currentUser.uid}/avatar.jpg`;
+        const { error: uploadError } = await supabase.storage
+          .from("profiles")
+          .upload(filePath, image, {
+            contentType: image.type,
+            upsert: true,
+          });
+
+        if (uploadError) throw new Error(uploadError.message);
+
+        const { data: urlData } = supabase.storage
+          .from("profiles")
+          .getPublicUrl(filePath);
+
+        imageUrl = urlData.publicUrl;
+        // ────────────────────────────────────────────────────────
       }
 
-      const updatedData = {
-        username,
-        instagram,
-        imageUrl
-      };
+      const updatedData = { username, instagram, imageUrl };
 
-      await updateDoc(
-        doc(db, "users", auth.currentUser.uid),
-        updatedData
-      );
+      await updateDoc(doc(db, "users", auth.currentUser.uid), updatedData);
 
       onUpdate({ ...user, ...updatedData });
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Failed to update profile");
+      alert("Failed to update profile: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -89,14 +91,8 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
         />
 
         <div className="modal-actions">
-          <button className="cancel-btn" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className="save-btn"
-            onClick={handleSave}
-            disabled={loading}
-          >
+          <button className="cancel-btn" onClick={onClose}>Cancel</button>
+          <button className="save-btn" onClick={handleSave} disabled={loading}>
             {loading ? "Saving..." : "Save"}
           </button>
         </div>
