@@ -26,15 +26,21 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/promotions", promotionRoutes);
 
-// 404 handler (important for Vercel)
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// Error handler (prevents server crash)
+// Error handler
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
   res.status(500).json({ message: "Internal Server Error" });
+});
+
+// Start server locally (not used on Vercel)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Backend running on http://localhost:${PORT}`);
 });
 
 export default app;
