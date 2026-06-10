@@ -220,7 +220,7 @@ export default function ParallaxBackground() {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: -2,
+        zIndex: 0,
         overflow: "hidden",
         background: PRESET.bgGradient,
       }}
