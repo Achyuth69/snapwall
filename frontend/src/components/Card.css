@@ -150,3 +150,96 @@
   box-shadow: 0 0 22px rgba(255, 59, 106, 0.45);
   z-index: 6;
 }
+
+/* ── Slideshow ── */
+.polaroid-image img {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.polaroid-image img.slide-right {
+  animation: slideOutLeft 0.22s ease forwards;
+}
+
+.polaroid-image img.slide-left {
+  animation: slideOutRight 0.22s ease forwards;
+}
+
+@keyframes slideOutLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-12px); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(12px); }
+}
+
+/* Arrows */
+.slide-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 3;
+}
+
+.slide-arrow.left  { left: 6px; }
+.slide-arrow.right { right: 6px; }
+
+.polaroid-image:hover .slide-arrow { opacity: 1; }
+
+/* Always visible on touch */
+@media (hover: none) {
+  .slide-arrow { opacity: 0.7; }
+}
+
+/* Dots */
+.slide-dots {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 3;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dot.active {
+  background: #fff;
+  transform: scale(1.3);
+}
+
+/* Counter */
+.slide-counter {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  z-index: 3;
+  font-weight: 600;
+}

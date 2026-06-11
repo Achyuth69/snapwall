@@ -320,3 +320,70 @@ select.gradient-input:focus {
   width: 100%;
   margin-bottom: 14px;
 }
+
+/* ── Multi-image thumbnails ── */
+.img-thumb-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.img-thumb {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition: border 0.2s;
+}
+
+.img-thumb.active {
+  border: 2px solid #A821EB;
+}
+
+.img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.7);
+  border: none;
+  color: #fff;
+  font-size: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb-add {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 2px dashed rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.thumb-add:hover {
+  border-color: #A821EB;
+  color: #A821EB;
+}
