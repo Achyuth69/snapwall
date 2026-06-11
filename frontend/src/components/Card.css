@@ -200,12 +200,10 @@
 
 .polaroid-image:hover .slide-arrow { opacity: 1; }
 
-/* Always visible on touch */
+/* Slideshow arrows always visible on touch devices */
 @media (hover: none) {
   .slide-arrow { opacity: 0.7; }
 }
-
-/* Dots */
 .slide-dots {
   position: absolute;
   bottom: 6px;
@@ -244,19 +242,6 @@
   font-weight: 600;
 }
 
-/* ── Mobile card sizing ── */
-@media (max-width: 768px) {
-  .polaroid-card {
-    width: clamp(160px, 44vw, 200px);
-    transform: rotate(0deg) translateY(0px) scale(1) !important;
-  }
-  .polaroid-image img { height: 160px; }
-}
 
-@media (max-width: 480px) {
-  .polaroid-card {
-    width: min(320px, 90vw);
-  }
-  .polaroid-image img { height: 200px; }
-  .slide-arrow { opacity: 0.8; }
-}
+/* ── Mobile card sizing — REMOVED, wall keeps same look on all devices ── */
+

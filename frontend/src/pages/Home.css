@@ -6,16 +6,18 @@
   background: transparent;
 }
 
-/* VIEWPORT (camera window) */
+/* VIEWPORT (camera window) — scrollable on all devices */
 .memory-viewport {
   height: calc(100vh - 65px);
   width: 100%;
   overflow: auto;
   position: relative;
   z-index: 1;
+  /* smooth momentum scroll on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* VIRTUAL CANVAS */
+/* VIRTUAL CANVAS — same big wall on all screens */
 .memory-canvas {
   min-width: 3000px;
   min-height: 4000px;
@@ -59,25 +61,4 @@
   0% { transform: scale(1); }
   50% { transform: scale(1.04); }
   100% { transform: scale(1); }
-}
-
-/* ── Mobile ── */
-@media (max-width: 768px) {
-  .memory-canvas {
-    min-width: 100vw;
-    min-height: unset;
-    padding: 90px 16px 120px;
-  }
-
-  .memory-wall {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .memory-wall {
-    grid-template-columns: 1fr;
-    justify-items: center;
-  }
 }
