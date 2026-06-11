@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Signup.css";
-import { createUserWithEmailAndPassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -83,12 +83,9 @@ const Signup = () => {
 
     try {
       setLoading(true);
-
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      await sendEmailVerification(userCred.user);
-
-      toast.success("Verification email sent. Check your inbox.");
-      navigate("/verify-email");
+      await createUserWithEmailAndPassword(auth, email, password);
+      toast.success("Account created! Welcome to SnapWall 🎉");
+      navigate("/");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         toast.error("Email already registered. Please login.");
