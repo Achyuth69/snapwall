@@ -5,27 +5,32 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <h1 className="footer-title">
-          Snapwall where moments live forever
+          Snapwall — where moments live forever
         </h1>
-        <p className="footer-subtitle">
-            Designed and Developed By{" "}
-        <a
+
+        <p className="footer-subtitle">Designed and Developed By</p>
+
+        <div className="footer-social">
+          <a
             href="https://www.linkedin.com/in/achyuthparisha/"
             target="_blank"
             rel="noopener noreferrer"
-            className="insta-link"
-            >
-            <img src="/linkedin.png" alt="LinkedIn" /> @Achyuth_Parisha
-        </a>
-        <a
+            className="social-link linkedin"
+          >
+            <img src="/linkedin.png" alt="LinkedIn" />
+            <span>@Achyuth_Parisha</span>
+          </a>
+
+          <a
             href="https://www.instagram.com/c_6ut_9725"
             target="_blank"
             rel="noopener noreferrer"
-            className="insta-link"
-            >
-            <img src="/instagram.png" alt="Instagram" /> @Achyuth_Parisha
-        </a>
-        </p>
+            className="social-link instagram"
+          >
+            <img src="/instagram.png" alt="Instagram" />
+            <span>@Achyuth_Parisha</span>
+          </a>
+        </div>
       </div>
 
       <div className="footer-bottom">
