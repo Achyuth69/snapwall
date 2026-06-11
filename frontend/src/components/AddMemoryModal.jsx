@@ -46,8 +46,14 @@ const AddMemoryModal = ({ onClose }) => {
   const [shareLink, setShareLink] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
 
+  const [isDragging, setIsDragging] = useState(false);
+
   const handleFilesAdd = (e) => {
     const files = Array.from(e.target.files);
+    addFiles(files);
+  };
+
+  const addFiles = (files) => {
     const remaining = MAX_IMAGES - images.length;
     const toAdd = files.slice(0, remaining).map((file) => ({
       file,
@@ -59,6 +65,13 @@ const AddMemoryModal = ({ onClose }) => {
     const updated = [...images, ...toAdd];
     setImages(updated);
     setActiveIdx(updated.length - 1);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
+    addFiles(files);
   };
 
   const updateActive = (field, value) => {
@@ -158,7 +171,12 @@ const AddMemoryModal = ({ onClose }) => {
                   </div>
                 ))}
                 {images.length < MAX_IMAGES && (
-                  <label className="thumb-add">
+                  <label
+                    className={`thumb-add ${isDragging ? "dragging" : ""}`}
+                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDrop}
+                  >
                     <FaPlus />
                     <input type="file" accept="image/*" multiple hidden onChange={handleFilesAdd} />
                   </label>
@@ -168,10 +186,16 @@ const AddMemoryModal = ({ onClose }) => {
 
             {/* Upload box if no images yet */}
             {images.length === 0 && (
-              <label className="upload-box">
+              <label
+                className={`upload-box ${isDragging ? "dragging" : ""}`}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={handleDrop}
+              >
                 <input type="file" accept="image/*" multiple hidden onChange={handleFilesAdd} />
                 <div className="upload-icon"><FaCloudUploadAlt size={24} /></div>
-                <p>Upload up to {MAX_IMAGES} images</p>
+                <p>Drop images here or click to upload</p>
+                <span className="upload-hint">Up to {MAX_IMAGES} images</span>
               </label>
             )}
 
