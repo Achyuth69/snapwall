@@ -48,15 +48,9 @@ const Signup = () => {
     try {
       setLoading(true);
       const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-
-      if (result._tokenResponse.isNewUser) {
-        toast.success("Account created with Google");
-        navigate("/profile-details");
-      } else {
-        toast.success("Welcome back!");
-        navigate("/");
-      }
+      await signInWithPopup(auth, provider);
+      toast.success("Welcome to SnapWall!");
+      navigate("/");
     } catch (err) {
       toast.error("Google sign-in failed");
     } finally {

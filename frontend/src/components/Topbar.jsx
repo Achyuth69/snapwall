@@ -72,16 +72,21 @@ const Topbar = ({ onSearch }) => {
                 </button>
 
                 <img
-                  src={profileImage}
+                  src={profileImage || "https://ui-avatars.com/api/?name=User"}
                   alt="profile"
                   className="profile-img"
                   onClick={() => navigate("/profile")}
                 />
               </>
             ) : (
-              <button className="login-btn" onClick={() => navigate("/login")}>
-                Login
-              </button>
+              <>
+                <button className="add-btn" onClick={() => navigate("/login")}>
+                  <FaPlus /> Add Memory
+                </button>
+                <button className="login-btn" onClick={() => navigate("/login")}>
+                  Login
+                </button>
+              </>
             )}
           </div>
         </div>

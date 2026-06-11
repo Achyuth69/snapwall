@@ -1,34 +1,29 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "./firebase";
+import { auth } from "./firebase";
 import { Toaster } from "react-hot-toast";
 
 import Topbar from "./components/Topbar.jsx";
 import ParallaxBackground from "./components/ParallaxBackground.jsx";
 import "./App.css";
 
+// Auth-only pages — no topbar
+const AUTH_PAGES = ["/login", "/signup", "/forgot", "/verify-email", "/success"];
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const guestTimerRef = useRef(null);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const [pageKey, setPageKey] = useState(location.pathname);
   const [transitioning, setTransitioning] = useState(false);
 
-  const hideTopbar = [
-    "/login",
-    "/signup",
-    "/forgot",
-    "/verify-email",
-    "/profile-details",
-    "/success",
-  ].includes(location.pathname);
+  const hideTopbar = AUTH_PAGES.includes(location.pathname);
 
-  // Trigger smooth fade on route change
+  // Page transition
   useEffect(() => {
     setTransitioning(true);
     const t = setTimeout(() => {
@@ -43,58 +38,19 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (guestTimerRef.current) {
-        clearTimeout(guestTimerRef.current);
-        guestTimerRef.current = null;
-      }
-
-      if (!user) {
-        if (location.pathname === "/" && !guestTimerRef.current) {
-          guestTimerRef.current = setTimeout(() => {
-            navigate("/signup");
-          }, 10000);
-        } else if (!["/login", "/signup", "/forgot"].includes(location.pathname)) {
-          navigate("/login");
-        }
-        setLoading(false);
-        return;
-      }
-
-      if (!user.emailVerified) {
-        if (location.pathname !== "/verify-email") {
-          navigate("/verify-email");
-        }
-        setLoading(false);
-        return;
-      }
-
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (!docSnap.exists()) {
-        if (location.pathname !== "/profile-details") {
-          navigate("/profile-details");
-        }
-        setLoading(false);
-        return;
-      }
-
-      if (
-        ["/login", "/signup", "/verify-email", "/profile-details"].includes(
-          location.pathname
-        )
-      ) {
-        navigate("/");
-      }
-
+    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
       setLoading(false);
-    });
 
-    return () => {
-      unsub();
-      if (guestTimerRef.current) clearTimeout(guestTimerRef.current);
-    };
+      if (firebaseUser) {
+        // Logged in — if on auth page, go home
+        if (AUTH_PAGES.includes(location.pathname)) {
+          navigate("/");
+        }
+      }
+      // Not logged in — stay on current page (home is public)
+    });
+    return () => unsub();
   }, [navigate, location.pathname]);
 
   if (loading) return null;
@@ -106,12 +62,12 @@ function App() {
       <ParallaxBackground />
 
       <div className="app-content">
-        {!hideTopbar && <Topbar onSearch={setSearchQuery} />}
+        {!hideTopbar && <Topbar onSearch={setSearchQuery} user={user} />}
         <div
           key={pageKey}
           className={`page-transition ${transitioning ? "page-out" : "page-in"}`}
         >
-          <Outlet context={{ searchQuery }} />
+          <Outlet context={{ searchQuery, user }} />
         </div>
       </div>
     </div>

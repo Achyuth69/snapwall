@@ -4,8 +4,6 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase";
 import toast from "react-hot-toast";
 
 
@@ -50,23 +48,11 @@ const Login = () => {
   }, [nextIndex]);
 
   const handleGoogleLogin = async () => {
-
     try {
       const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      // 🔥 Check if user profile exists in Firestore
-      const userDocRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      if (!userDoc.exists()) {
-        // 🚀 New user → needs profile setup
-        navigate("/profile-details");
-      } else {
-        // ✅ Existing user
-        navigate("/");
-      }
+      await signInWithPopup(auth, provider);
+      // Always go home — profile setup is optional via Profile page
+      navigate("/");
     } catch (err) {
       console.error(err);
       toast.error("Google sign-in failed. Try again.");
