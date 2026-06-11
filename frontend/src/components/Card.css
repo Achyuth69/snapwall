@@ -175,11 +175,15 @@
   flex-shrink: 0;
   position: relative;
   width: 100%;
-  height: clamp(200px, 42vh, 320px);
+  /* Taller so portrait images have room to show fully */
+  height: clamp(240px, 52vh, 420px);
+  background: #000;
 }
 
 .lightbox-image-wrap img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  /* show full image, never crop */
 }
 
 /* ── Info + comments: scrolls when content overflows ── */
@@ -380,6 +384,6 @@
   }
 
   .lightbox-image-wrap {
-    height: clamp(180px, 38vh, 280px);
+    height: clamp(200px, 48vh, 360px);
   }
 }
