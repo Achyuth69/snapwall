@@ -1,0 +1,135 @@
+/* ── UserProfile page ── */
+
+.up-page {
+  padding-top: 100px;
+}
+
+.up-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.2s;
+  margin-bottom: 10px;
+}
+
+.up-back-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateX(-3px);
+}
+
+/* Stats block */
+.up-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.up-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  padding: 14px 28px;
+  border-radius: 16px;
+  min-width: 90px;
+}
+
+.up-stat-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.up-stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+}
+
+/* Empty state */
+.up-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+}
+
+/* Wall layout — same natural grid as home */
+.up-wall {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding: 20px 0 60px;
+  justify-content: flex-start;
+}
+
+/* Not-found / loading state */
+.up-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  gap: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.up-not-found h2 {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Loading spinner */
+.up-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #A821EB;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  margin: 40vh auto 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .up-page {
+    padding-top: 80px;
+  }
+
+  .up-stats {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .up-stat {
+    padding: 10px 20px;
+    min-width: 70px;
+  }
+
+  .up-stat-num {
+    font-size: 22px;
+  }
+
+  .up-wall {
+    gap: 20px;
+    justify-content: center;
+  }
+}

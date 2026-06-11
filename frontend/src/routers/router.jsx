@@ -8,6 +8,7 @@ import Success from "../Authentication/Success.jsx";
 import ProfileDetails from "../Authentication/ProfileDetails.jsx";
 import Promotions from "../pages/Promotions.jsx";
 import Profile from "../pages/Profile.jsx";
+import UserProfile from "../pages/UserProfile.jsx";
 import VerifyEmail from "../Authentication/VerifyEmail.jsx";
 
 const router = createBrowserRouter([
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />
+      },
+      {
+        path: "user/:userId",
+        element: <UserProfile />
       }
     ],
   },
