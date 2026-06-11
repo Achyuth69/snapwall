@@ -204,6 +204,7 @@
 
 /* MOBILE */
 @media (max-width: 600px) {
+  .profile-posts {
     grid-template-columns: 1fr;
     justify-items: center;
   }

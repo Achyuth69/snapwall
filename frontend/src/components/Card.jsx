@@ -192,7 +192,11 @@ const Card = ({ memory, isHighlighted }) => {
       {lightbox && (
         <div className="lightbox-overlay" onClick={() => setLightbox(false)}>
           <div className="lightbox-card" onClick={(e) => e.stopPropagation()}>
-            <button className="lightbox-close" onClick={() => setLightbox(false)}><FaTimes /></button>
+
+            {/* Sticky close row — always visible at top while scrolling */}
+            <div className="lightbox-header">
+              <button className="lightbox-close" onClick={() => setLightbox(false)}><FaTimes /></button>
+            </div>
 
             <div className="lightbox-image-wrap" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
               <img src={images[slideIdx]} alt="" className={sliding ? `slide-${sliding}` : ""} />
