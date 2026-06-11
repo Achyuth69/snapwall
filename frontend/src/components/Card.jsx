@@ -3,6 +3,7 @@ import {
   FaTimes, FaHeart, FaRegHeart, FaComment, FaDownload
 } from "react-icons/fa";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { db, auth } from "../firebase";
 import {
   doc, updateDoc, arrayUnion, arrayRemove, onSnapshot,
@@ -51,6 +52,16 @@ const Card = ({ memory, isHighlighted }) => {
     });
     return () => unsub();
   }, [memory.id, user]);
+
+  // ── Lock body scroll when lightbox is open ──────────
+  useEffect(() => {
+    if (lightbox) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [lightbox]);
 
   // ── Comments realtime ────────────────────────────────
   useEffect(() => {
@@ -188,12 +199,12 @@ const Card = ({ memory, isHighlighted }) => {
         </div>
       </div>
 
-      {/* ── LIGHTBOX ── */}
-      {lightbox && (
+      {/* ── LIGHTBOX — rendered on document.body via Portal to escape stacking contexts ── */}
+      {lightbox && createPortal(
         <div className="lightbox-overlay" onClick={() => setLightbox(false)}>
           <div className="lightbox-card" onClick={(e) => e.stopPropagation()}>
 
-            {/* Sticky close row — always visible at top while scrolling */}
+            {/* Sticky close row */}
             <div className="lightbox-header">
               <button className="lightbox-close" onClick={() => setLightbox(false)}><FaTimes /></button>
             </div>
@@ -212,7 +223,7 @@ const Card = ({ memory, isHighlighted }) => {
             <div className="lightbox-info">
               <div className="user-row" style={{justifyContent:"center"}}>
                 <img className="avatar" src={memory.profileImage} alt="" />
-                <span className="username" style={{cursor:"pointer"}} onClick={() => navigate(`/user/${memory.userId}`)}>{memory.username}</span>
+                <span className="username" style={{cursor:"pointer"}} onClick={() => { setLightbox(false); navigate(`/user/${memory.userId}`); }}>{memory.username}</span>
               </div>
               <p className="caption" style={{fontSize:18}}>"{memory.caption}"</p>
               <div className="location-chip" style={{margin:"6px auto", justifyContent:"center"}}><FaMapMarkerAlt />{memory.city}, {memory.country}</div>
@@ -258,10 +269,14 @@ const Card = ({ memory, isHighlighted }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {showShare && <ShareMemoryModal imageUrl={images[slideIdx]} shareLink={shareLink} showSuccess={false} onClose={() => setShowShare(false)} />}
+      {showShare && createPortal(
+        <ShareMemoryModal imageUrl={images[slideIdx]} shareLink={shareLink} showSuccess={false} onClose={() => setShowShare(false)} />,
+        document.body
+      )}
     </>
   );
 };
