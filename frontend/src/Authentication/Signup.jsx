@@ -83,7 +83,18 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      // Create basic Firestore profile for email users
+      const { setDoc, doc } = await import("firebase/firestore");
+      const { db } = await import("../firebase");
+      await setDoc(doc(db, "users", userCred.user.uid), {
+        email: userCred.user.email,
+        username: email.split("@")[0],
+        instagram: "",
+        imageUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(email.split("@")[0])}`,
+        acceptedTerms: true,
+        createdAt: new Date(),
+      });
       toast.success("Account created! Welcome to SnapWall 🎉");
       navigate("/");
     } catch (err) {
