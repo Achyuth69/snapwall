@@ -61,7 +61,7 @@ const Topbar = ({ onSearch }) => {
               <FaSearch />
             </button>
 
-            <button className="promo-btn" onClick={() => navigate("/promotions")}>
+            <button className="promo-btn" onClick={() => user ? navigate("/promotions") : navigate("/login")}>
               <FaBullhorn /> <span>Promotions</span>
             </button>
 
