@@ -424,3 +424,20 @@ select.gradient-input:focus {
   background: rgba(168,33,235,0.15);
   color: #fff;
 }
+
+/* ── Mobile modal ── */
+@media (max-width: 600px) {
+  .memory-modal-ui {
+    margin-top: 0;
+    max-height: 95vh;
+    overflow-y: auto;
+    border-radius: 20px 20px 0 0;
+  }
+  .memory-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .crop-container {
+    height: 220px;
+  }
+}

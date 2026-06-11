@@ -60,3 +60,24 @@
   50% { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .memory-canvas {
+    min-width: 100vw;
+    min-height: unset;
+    padding: 90px 16px 120px;
+  }
+
+  .memory-wall {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .memory-wall {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+}

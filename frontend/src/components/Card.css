@@ -243,3 +243,20 @@
   z-index: 3;
   font-weight: 600;
 }
+
+/* ── Mobile card sizing ── */
+@media (max-width: 768px) {
+  .polaroid-card {
+    width: clamp(160px, 44vw, 200px);
+    transform: rotate(0deg) translateY(0px) scale(1) !important;
+  }
+  .polaroid-image img { height: 160px; }
+}
+
+@media (max-width: 480px) {
+  .polaroid-card {
+    width: min(320px, 90vw);
+  }
+  .polaroid-image img { height: 200px; }
+  .slide-arrow { opacity: 0.8; }
+}
