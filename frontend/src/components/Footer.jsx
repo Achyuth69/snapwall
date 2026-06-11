@@ -10,12 +10,20 @@ const Footer = () => {
         <p className="footer-subtitle">
             Designed and Developed By{" "}
         <a
-            href="https://www.instagram.com/vignesh_makthala"
+            href="https://www.linkedin.com/in/achyuthparisha/"
             target="_blank"
             rel="noopener noreferrer"
             className="insta-link"
             >
-            @vignesh_makthala
+            <img src="frontend\public\linkedin.png"></img> @Achyuth_Parisha
+        </a>
+        <a
+            href="https://www.instagram.com/c_6ut_9725"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="insta-link"
+            >
+            <img src="frontend\public\instagram.png"></img> @Achyuth_Parisha
         </a>
         </p>
       </div>
