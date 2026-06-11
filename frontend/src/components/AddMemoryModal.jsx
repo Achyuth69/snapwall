@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { FaTimes, FaCloudUploadAlt, FaPlus, FaTrash } from "react-icons/fa";
+import { useState, useRef } from "react";
+import { FaTimes, FaCloudUploadAlt, FaPlus } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import { Country, State, City } from "country-state-city";
 import { getAuth } from "firebase/auth";
@@ -22,20 +22,23 @@ const createImage = (url) =>
   });
 
 const getCroppedImg = async (imageSrc, crop) => {
+  if (!crop) return null;
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
   canvas.width = crop.width;
   canvas.height = crop.height;
   canvas.getContext("2d").drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
-  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), "image/jpeg"));
+  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.9));
 };
 
 const AddMemoryModal = ({ onClose }) => {
   const auth = getAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef();
+  const addMoreRef = useRef();
 
   const [step, setStep] = useState("form");
-  const [images, setImages] = useState([]); // [{file, preview, crop, zoom, croppedPixels}]
+  const [images, setImages] = useState([]);
   const [activeIdx, setActiveIdx] = useState(0);
   const [caption, setCaption] = useState("");
   const [countryCode, setCountryCode] = useState("");
@@ -45,54 +48,49 @@ const AddMemoryModal = ({ onClose }) => {
   const [uploadProgress, setUploadProgress] = useState("");
   const [shareLink, setShareLink] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
-
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFilesAdd = (e) => {
-    const files = Array.from(e.target.files);
-    addFiles(files);
-  };
-
   const addFiles = (files) => {
+    const imageFiles = files.filter((f) => f.type.startsWith("image/"));
     const remaining = MAX_IMAGES - images.length;
-    const toAdd = files.slice(0, remaining).map((file) => ({
+    const toAdd = imageFiles.slice(0, remaining).map((file) => ({
       file,
       preview: URL.createObjectURL(file),
       crop: { x: 0, y: 0 },
       zoom: 1,
       croppedPixels: null,
     }));
-    const updated = [...images, ...toAdd];
-    setImages(updated);
-    setActiveIdx(updated.length - 1);
+    if (toAdd.length === 0) return;
+    setImages((prev) => {
+      const updated = [...prev, ...toAdd];
+      setActiveIdx(updated.length - 1);
+      return updated;
+    });
   };
 
+  const handleFileInput = (e) => addFiles(Array.from(e.target.files));
+
+  const handleDragOver = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); };
+  const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
   const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
-    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
-    addFiles(files);
+    addFiles(Array.from(e.dataTransfer.files));
   };
 
-  const updateActive = (field, value) => {
+  const updateActive = (field, value) =>
     setImages((prev) => prev.map((img, i) => i === activeIdx ? { ...img, [field]: value } : img));
-  };
 
   const removeImage = (idx) => {
     const updated = images.filter((_, i) => i !== idx);
     setImages(updated);
-    setActiveIdx(Math.min(activeIdx, updated.length - 1));
+    setActiveIdx(Math.max(0, Math.min(activeIdx, updated.length - 1)));
   };
 
   const handleSubmit = async () => {
-    if (images.length === 0 || !caption || !countryCode || !stateCode || !city) {
-      alert("Please fill all fields and add at least one image");
-      return;
-    }
-    if (images.some((img) => !img.croppedPixels)) {
-      alert("Please adjust all images before posting");
-      return;
-    }
+    if (images.length === 0) return alert("Add at least one image");
+    if (!caption || !countryCode || !stateCode || !city) return alert("Please fill all fields");
 
     try {
       setLoading(true);
@@ -104,11 +102,11 @@ const AddMemoryModal = ({ onClose }) => {
       const username = userData.username || user.displayName || "Anonymous";
       const profileImage = userData.imageUrl || user.photoURL || "https://ui-avatars.com/api/?name=User";
 
-      // Upload all images
       const imageUrls = [];
       for (let i = 0; i < images.length; i++) {
         setUploadProgress(`Uploading ${i + 1}/${images.length}...`);
         const blob = await getCroppedImg(images[i].preview, images[i].croppedPixels);
+        if (!blob) continue;
         const filePath = `${user.uid}/${Date.now()}_${i}.jpg`;
         const { error } = await supabase.storage.from("memories").upload(filePath, blob, { contentType: "image/jpeg" });
         if (error) throw new Error(error.message);
@@ -116,12 +114,14 @@ const AddMemoryModal = ({ onClose }) => {
         imageUrls.push(data.publicUrl);
       }
 
+      if (imageUrls.length === 0) throw new Error("No images uploaded");
+
       const now = new Date();
       const postedDate = `${String(now.getDate()).padStart(2, "0")}-${String(now.getMonth() + 1).padStart(2, "0")}-${now.getFullYear()}`;
 
       const docRef = await addDoc(collection(db, "memories"), {
-        imageUrl: imageUrls[0],       // backward compat — first image
-        imageUrls,                     // all images for slideshow
+        imageUrl: imageUrls[0],
+        imageUrls,
         caption,
         country: Country.getCountryByCode(countryCode)?.name,
         state: State.getStateByCodeAndCountry(stateCode, countryCode)?.name,
@@ -155,15 +155,11 @@ const AddMemoryModal = ({ onClose }) => {
             <FaTimes className="close-icon" onClick={!loading ? onClose : undefined} />
             <h2>Add Memory</h2>
 
-            {/* Image thumbnails row */}
+            {/* Thumbnail row */}
             {images.length > 0 && (
               <div className="img-thumb-row">
                 {images.map((img, i) => (
-                  <div
-                    key={i}
-                    className={`img-thumb ${i === activeIdx ? "active" : ""}`}
-                    onClick={() => setActiveIdx(i)}
-                  >
+                  <div key={i} className={`img-thumb ${i === activeIdx ? "active" : ""}`} onClick={() => setActiveIdx(i)}>
                     <img src={img.preview} alt="" />
                     <button className="thumb-remove" onClick={(e) => { e.stopPropagation(); removeImage(i); }}>
                       <FaTimes />
@@ -171,35 +167,43 @@ const AddMemoryModal = ({ onClose }) => {
                   </div>
                 ))}
                 {images.length < MAX_IMAGES && (
-                  <label
-                    className={`thumb-add ${isDragging ? "dragging" : ""}`}
-                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                    onDragLeave={() => setIsDragging(false)}
-                    onDrop={handleDrop}
-                  >
+                  <div className="thumb-add" onClick={() => addMoreRef.current?.click()}>
                     <FaPlus />
-                    <input type="file" accept="image/*" multiple hidden onChange={handleFilesAdd} />
-                  </label>
+                    <input ref={addMoreRef} type="file" accept="image/*" multiple hidden onChange={handleFileInput} />
+                  </div>
                 )}
               </div>
             )}
 
-            {/* Upload box if no images yet */}
+            {/* Drop zone — only shown when no images */}
             {images.length === 0 && (
-              <label
+              <div
                 className={`upload-box ${isDragging ? "dragging" : ""}`}
-                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                onDragLeave={() => setIsDragging(false)}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
               >
-                <input type="file" accept="image/*" multiple hidden onChange={handleFilesAdd} />
+                <input ref={fileInputRef} type="file" accept="image/*" multiple hidden onChange={handleFileInput} />
                 <div className="upload-icon"><FaCloudUploadAlt size={24} /></div>
-                <p>Drop images here or click to upload</p>
+                <p>Drop images here or tap to upload</p>
                 <span className="upload-hint">Up to {MAX_IMAGES} images</span>
-              </label>
+              </div>
             )}
 
-            {/* Cropper for active image */}
+            {/* Also allow drop on whole modal when images exist */}
+            {images.length > 0 && images.length < MAX_IMAGES && (
+              <div
+                className={`drop-more ${isDragging ? "dragging" : ""}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                Drop more images here
+              </div>
+            )}
+
+            {/* Cropper */}
             {active && (
               <>
                 <div className="crop-container">
@@ -213,23 +217,16 @@ const AddMemoryModal = ({ onClose }) => {
                     onCropComplete={(_, p) => updateActive("croppedPixels", p)}
                   />
                 </div>
-                <p className="zoom-label">Zoom & adjust — image {activeIdx + 1} of {images.length}</p>
-                <input
-                  type="range" min={1} max={3} step={0.1}
-                  value={active.zoom}
+                <p className="zoom-label">Image {activeIdx + 1} of {images.length} — pinch or drag to adjust</p>
+                <input type="range" min={1} max={3} step={0.1} value={active.zoom}
                   onChange={(e) => updateActive("zoom", Number(e.target.value))}
                   className="zoom-slider"
                 />
               </>
             )}
 
-            <textarea
-              className="gradient-input caption-box"
-              placeholder="Caption"
-              maxLength={60}
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-            />
+            <textarea className="gradient-input caption-box" placeholder="Caption" maxLength={60}
+              value={caption} onChange={(e) => setCaption(e.target.value)} />
 
             <select className="gradient-input" value={countryCode}
               onChange={(e) => { setCountryCode(e.target.value); setStateCode(""); setCity(""); }}>
@@ -249,8 +246,8 @@ const AddMemoryModal = ({ onClose }) => {
               {City.getCitiesOfState(countryCode, stateCode).map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
             </select>
 
-            <button className="post-btn" onClick={handleSubmit} disabled={loading}>
-              {loading ? uploadProgress || "Uploading..." : `Post ${images.length > 1 ? `(${images.length} photos)` : ""}`}
+            <button className="post-btn" onClick={handleSubmit} disabled={loading || images.length === 0}>
+              {loading ? uploadProgress || "Uploading..." : `Post${images.length > 1 ? ` (${images.length} photos)` : ""}`}
             </button>
           </div>
         </div>

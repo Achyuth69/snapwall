@@ -406,3 +406,21 @@ select.gradient-input:focus {
   background: rgba(168,33,235,0.2);
   color: #A821EB;
 }
+
+/* Drop more zone */
+.drop-more {
+  width: 100%;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1.5px dashed rgba(255,255,255,0.25);
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+.drop-more.dragging {
+  border-color: #A821EB;
+  background: rgba(168,33,235,0.15);
+  color: #fff;
+}
