@@ -15,7 +15,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             className="insta-link"
             >
-            <img src="frontend\public\linkedin.png"></img> @Achyuth_Parisha
+            <img src="/linkedin.png" alt="LinkedIn" /> @Achyuth_Parisha
         </a>
         <a
             href="https://www.instagram.com/c_6ut_9725"
@@ -23,7 +23,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             className="insta-link"
             >
-            <img src="frontend\public\instagram.png"></img> @Achyuth_Parisha
+            <img src="/instagram.png" alt="Instagram" /> @Achyuth_Parisha
         </a>
         </p>
       </div>
