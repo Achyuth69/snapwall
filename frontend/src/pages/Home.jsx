@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   collection,
   query,
-  orderBy,
   onSnapshot
 } from "firebase/firestore";
 import { useOutletContext, useLocation } from "react-router-dom";
@@ -13,6 +12,16 @@ import "./Home.css";
 
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 1.4;
+
+// ── Smart ranking: likes × 3 + recency bonus (decays over 72h) ──
+const scoreMemory = (m) => {
+  const likeCount = (m.likes?.length || 0);
+  const createdAt = m.createdAt?.toDate?.() || new Date(0);
+  const hoursOld = (Date.now() - createdAt.getTime()) / 36e5;
+  // Recency bonus: full 10 pts if <1h old, fades to 0 after 72h
+  const recencyBonus = Math.max(0, 10 - (hoursOld / 72) * 10);
+  return likeCount * 3 + recencyBonus;
+};
 
 const Home = () => {
   const { searchQuery } = useOutletContext();
@@ -25,16 +34,15 @@ const Home = () => {
 
   /* 🔥 REALTIME FETCH */
   useEffect(() => {
-    const q = query(
-      collection(db, "memories"),
-      orderBy("createdAt", "desc")
-    );
+    const q = query(collection(db, "memories"));
 
     const unsubscribe = onSnapshot(q, (snap) => {
       const list = snap.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      // Sort by smart score: likes × 3 + recency bonus
+      list.sort((a, b) => scoreMemory(b) - scoreMemory(a));
       setMemories(list);
     });
 
