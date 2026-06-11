@@ -3,8 +3,9 @@ import { auth, db } from "../firebase";
 import { supabase } from "../supabase";
 import EditMemoryModal from "../components/EditMemoryModal.jsx";
 import MemoryCard from "../components/MemoryCard.jsx";
-import { FaPencilAlt, FaInstagram } from "react-icons/fa";
+import { FaPencilAlt, FaInstagram, FaHome } from "react-icons/fa";
 import EditProfileModal from "../components/EditProfileModal.jsx";
+import { useNavigate } from "react-router-dom";
 import {
   doc,
   getDoc,
@@ -21,6 +22,7 @@ import GoogleAd from "../components/GoogleAd";
 import Footer from "../components/Footer.jsx";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -103,6 +105,13 @@ const Profile = () => {
   return (
     <>
       <div className="profile-page">
+
+        {/* ── Floating Home Button ── */}
+        <button className="float-home-btn" onClick={() => navigate("/")} title="Back to Wall">
+          <FaHome />
+          <span>Wall</span>
+        </button>
+
         <div className="ad-banner">
           <GoogleAd slot="1234567890" />
         </div>
