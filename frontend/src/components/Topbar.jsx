@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { FaBullhorn, FaPlus, FaSearch, FaTimes } from "react-icons/fa";
+import { FaBullhorn, FaPlus, FaSearch, FaTimes, FaArrowLeft } from "react-icons/fa";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Topbar.css";
 import AddMemoryModal from "./AddMemoryModal.jsx";
 
 const Topbar = ({ onSearch }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const auth = getAuth();
+  const isProfilePage = location.pathname === "/profile";
 
   const [user, setUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
@@ -38,6 +40,11 @@ const Topbar = ({ onSearch }) => {
       <header className="topbar">
         <div className="topbar-inner">
           <div className="topbar-left" onClick={() => navigate("/")}>
+            {isProfilePage && (
+              <button className="back-arrow-btn" onClick={(e) => { e.stopPropagation(); navigate("/"); }} title="Back to Wall">
+                <FaArrowLeft />
+              </button>
+            )}
             <h1>SnapWall</h1>
             <span>My Memory on Earth</span>
           </div>
