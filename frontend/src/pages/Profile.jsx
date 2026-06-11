@@ -69,7 +69,13 @@ const Profile = () => {
   };
 
   if (loading) return <div className="profile-loading">Loading...</div>;
-  if (!userData) return <div className="profile-loading">No user data</div>;
+  if (!userData) return (
+    <div className="profile-loading">
+      <p style={{color:'#fff', textAlign:'center', padding:'40px'}}>
+        Sign in to view your profile
+      </p>
+    </div>
+  );
 
   return (
     <>
